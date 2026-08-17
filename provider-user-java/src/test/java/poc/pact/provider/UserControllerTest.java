@@ -15,7 +15,7 @@ class UserControllerTest {
         UserResponse response = controller.findById(123L);
 
         assertThat(response.id()).isEqualTo(123L);
-        assertThat(response.name()).isEqualTo("Michael");
+        assertThat(response.fullName()).isEqualTo("Michael");
         assertThat(response.email()).isEqualTo("michael@email.com");
         assertThat(response.active()).isTrue();
     }

@@ -1,4 +1,4 @@
 package poc.pact.provider;
 
-public record UserResponse(Long id, String name, String email, boolean active) {
+public record UserResponse(Long id, String fullName, String email, boolean active) {
 }
