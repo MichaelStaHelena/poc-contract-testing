@@ -1,0 +1,1 @@
+"""Notification consumer API."""

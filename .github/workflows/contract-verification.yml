@@ -1,0 +1,41 @@
+name: Contract verification
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "consumer-order-java/**"
+      - "consumer-notification-python/**"
+      - "provider-user-java/**"
+      - "pom.xml"
+      - "scripts/**"
+      - ".github/workflows/contract-verification.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+  PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME }}
+  PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD }}
+
+jobs:
+  contract-verification:
+    name: Publish contracts, verify provider and gate deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: ./scripts/pact/publish-java-pact.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: ./scripts/pact/publish-python-pact.sh
+      - run: ./scripts/pact/verify-provider.sh
+      - run: ./scripts/pact/can-i-deploy.sh
+        env:
+          PACT_ENVIRONMENT: production

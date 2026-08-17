@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+      POSTGRES_DB: pact
+    volumes:
+      - pact-postgres-data:/var/lib/postgresql/data
+
+  pact-broker:
+    image: pactfoundation/pact-broker:latest
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      PACT_BROKER_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/pact
+      PACT_BROKER_BASE_URL: ${PACT_BROKER_BASE_URL:?set to the public HTTPS URL}
+      PACT_BROKER_BASIC_AUTH_USERNAME: ${PACT_BROKER_USERNAME:?set in .env}
+      PACT_BROKER_BASIC_AUTH_PASSWORD: ${PACT_BROKER_PASSWORD:?set in .env}
+      PACT_BROKER_ALLOW_PUBLIC_READ: "true"
+    ports:
+      - "127.0.0.1:9292:9292"
+
+volumes:
+  pact-postgres-data:

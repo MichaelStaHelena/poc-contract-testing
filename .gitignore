@@ -22,3 +22,14 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Build and local environment files
+.mvn/apache-maven-*/
+**/target/
+**/.venv/
+**/__pycache__/
+**/*.egg-info/
+consumer-notification-python/pacts/
+.env
+.idea/
+.vscode/
